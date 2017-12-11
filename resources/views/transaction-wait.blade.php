@@ -21,7 +21,7 @@
                             
 
                         <div id="message-fresh" 
-                            class="alert alert-success" style="display:none">
+                            class="alert alert-danger" style="display:none">
                                 
                         </div>
 
@@ -97,7 +97,7 @@
 
                             <button id="query-manual" 
                             class="btn btn-primary"
-                            type="reset">Call</button>
+                            >Call</button>
 
                         </form>
 
