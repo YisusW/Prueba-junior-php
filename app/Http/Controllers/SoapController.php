@@ -35,25 +35,46 @@ class SoapController extends Controller
 
   }
 
+  private function getService(){
+
+		$servicio="https://test.placetopay.com/soap/pse/?wsdl"; //url del servicio
+		
+		$client = new \SoapClient( $servicio );
+
+		$client->__setLocation('https://test.placetopay.com/soap/pse/');
+		
+		return  $client;
+
+  }
+
+
+  private function getAuth(){
+
+		$parametros=array(); //parametros de la llamada
+
+		$parametros['login']	= $this->login;
+		$parametros['tranKey']	= $this->tranKey;
+		$parametros['seed']		= $this->seed;
+
+	return $parametros ;
+  }
+  	/*-----------------------------------------------------------------------
+  	!
+    !		- FUNCION PARA CONSUMIR SERVICIOS DE GET BANK LIST
+    !
+    ------------------------------------------------------------------------*/
 
 
     function servicio_banco ()
     {
 
-		$servicio="https://test.placetopay.com/soap/pse/?wsdl"; //url del servicio
-		$parametros=array(); //parametros de la llamada
-
-		$parametros['login']=$this->login;
-		$parametros['tranKey']=$this->tranKey;
-		$parametros['seed']=$this->seed; 
-		
-		$client = new \SoapClient($servicio );
-		$client->__setLocation('https://test.placetopay.com/soap/pse/');
-
+		$client = $this->getService();
 		
 		$minutos = 1440;
-
-		$Bank = $client->getBankList( array( 'auth' => $parametros ) );//llamamos al métdo que nos interesa con los parámetros
+    
+    $Authentication = $this->getAuth() ;
+		
+    $Bank = $client->getBankList( array( 'auth' => $Authentication ) );//llamamos al métdo que nos interesa con los parámetros
 		$Bank = Cache::remember( 'bankDay', $minutos, function () use ($Bank) {
 	    	return $Bank;
 		});
@@ -79,18 +100,48 @@ class SoapController extends Controller
             
             foreach ($datos as $key => $value) {
                  # code...
-
                 $datos = (object) $value;
              }             
              foreach ($datos as $key => $value) {
                  # code...
-
                 $datos = (object) $value;
              } 
              
 
     	return $datos ;
     }
+
+  	/*-----------------------------------------------------------------------
+    !
+    !		- FUNCION PARA CONSUMIR SERVICIOS DE CREAR TRANSACCION
+    !
+    ------------------------------------------------------------------------*/
+
+    function servicio_transaction ( $transaction_person )
+    {
+
+
+    $client = $this->getService();
+
+    //$result = $client->getBankList( $this->getAuth() );
+    $Authentication = $this->getAuth() ;
+    
+		$result = $client->createTransaction( array( 'auth' => $Authentication , 'transaction' => $transaction_person ) );//llamamos al métdo que nos interesa con los parámetros 
+		
+		return $result;
+	}
+
+  function procesar_peticion( $result ){
+    
+      $datos = (array) $result;
+            
+            foreach ($datos as $key => $value) {
+                 # code...
+                $datos = (object) $value;
+             }             
+
+      return $datos ;
+  }
 
 
 }

@@ -8,39 +8,57 @@
                 <div class="panel-heading">Listar Bancos</div>
 
                 <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
+
+                    @if($errors->has('message'))
+
+                    <div class="alert alert-success" role="alert">
+                        <strong>Bien</strong>
+                         {{ $errors->first('message') }}
+                    </div>
+                     
                     @endif
 
+                    @if (!isset($Bank))
+                    <div class="alert alert-warning"  role="alert">
+                        <strong>Atencion</strong>
+                         no se pudo obtener la lista de entidades financieras, por favor intente más tarde
+                     </div>
+
+                    @endif
                     
-                        <form action="" method="POST" role="form">
+
+                        <form action="create-transaction" method="POST" role="form">
+                            {{ csrf_field() }}
                             
-                            <center><legend>Listar Bancos</legend></center>
-                        
+                            <center><legend>Metodo de Pago</legend></center>
+ 
+
                             <div class="form-group">
-                                <label for="">Opción de pago</label>
-                                <select class="form-control">
+                                <label for="">Medio de pago</label>
+                                <select class="form-control" name="metodo" >
 
-                                    <option value="pse">PSE</option>
-
+                                    <option value="_PSE_">Débito a cuentas corrientes y ahorros (PSE)</option>
                                     
                                 </select>
                             </div>
 
+                            @if($errors->has('document'))
+
+                            <input type="hidden" name="persona_identidad" value="{{ $errors->first('document') }}">
+
+                            @endif
                             <div class="form-group">
-                                <label for="">Tipo de cuenta</label>
-                                <select class="form-control" name="type_count">
-                                    <option value="hum">Personas</option>
-                                    <option value="emp">Empresas</option>
+                                <label for="">Tipo de persona</label>
+                                <select class="form-control" name="bankInterface" required="true">
+                                    <option value="0">Personas</option>
+                                    <option value="1">Empresas</option>
                                 </select>
                             </div>   
 
                             <div class="form-group">
-                                                                
+
                                 <label for="">Entidad Financiera</label>
-                                <select class="form-control" name="bank">
+                                <select class="form-control is-invalid" name="bankCode" required="true">
                                  
 
                                  @if(isset($Bank))
@@ -48,16 +66,19 @@
                                  @foreach( $Bank as $banks )
                                     <option value="{{ $banks->bankCode }}" >{{ $banks->bankName }}</option>
                                  @endforeach
+                                                                  
                                  @endif
                                 
                                 </select>
+                                
+
                             </div>                        
                             
-                        
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </form>
+                            <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Confirmar</button>
+                            </div>
 
-                    
+                        </form>
 
                 </div>
             </div>

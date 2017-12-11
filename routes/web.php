@@ -11,7 +11,12 @@
 |
 */
 
-Route::get('/', 'HomeController@index')->name('bancos-lista');
+Route::get('/', 'personController@index')->name('personas-save');
+
+Route::post('subscrption-save' , 'personController@store');
+
+Route::post('create-transaction', 'HomeController@confirmacion_form');
+
 
 Auth::routes();
 
