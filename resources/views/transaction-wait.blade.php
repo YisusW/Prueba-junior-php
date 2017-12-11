@@ -9,8 +9,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Pagina de Espera</div>
-
+                
                 <div class="panel-body">
 
                     
@@ -20,11 +19,6 @@
                         <center><legend>Debug</legend></center>
                             
 
-                        <div id="message-fresh" 
-                            class="alert alert-danger" style="display:none">
-                                
-                        </div>
-
                     @if(isset($results->returnCode))
 
                     <div id="message" class="alert alert-warning" role="alert">
@@ -32,6 +26,12 @@
                         <br>
                          {{ $results->responseReasonText }}
                     </div>
+
+                    <label for="">para proseguir con la transaccion  debes dar click en el boton ir</label><br>
+
+                    <a id="url" href="{{ $results->bankURL }}" role="button" class="btn btn-success" target="_blank">
+                        ir
+                    </a>
                      
                     @endif                            
                                                         
@@ -99,15 +99,20 @@
                             class="btn btn-primary"
                             >Call</button>
 
+                            <button id="query-manual" 
+                            class="btn btn-primary"
+                            > Return to PPE</button>
+                            <br><br>
+                        <div id="message-fresh" 
+
+                            class="alert alert-danger" style="display:none">
+                                
+                        </div>
+
                         </form>
 
                     @if(isset($results->bankURL))
 
-                    <label for="">para proseguir con la transaccion  debes dar click en el boton ir</label><br>
-
-                    <a id="url" href="{{ $results->bankURL }}" role="button" class="btn btn-success" target="_blank">
-                        ir
-                    </a>
 
                     <a id="newurl" href="" role="button" class="btn btn-success" style="display:none"></a>
                      
@@ -125,8 +130,10 @@
    
         setInterval(hacer_verificacion_status, 300000); //300000 MS == 5 minutes
     
-        $("#query-manual").click(function(event) {
-            
+        $("#query-manual").click ( function (event) {
+
+            event.preventDefault();
+
             hacer_verificacion_status();
         });
     });
