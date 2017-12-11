@@ -99,10 +99,11 @@
                             class="btn btn-primary"
                             >Call</button>
 
-                            <button id="query-manual" 
+                            <button id="query-ppe" 
                             class="btn btn-primary"
                             > Return to PPE</button>
                             <br><br>
+
                         <div id="message-fresh" 
 
                             class="alert alert-danger" style="display:none">
@@ -135,6 +136,12 @@
             event.preventDefault();
 
             hacer_verificacion_status();
+        });
+
+        $('#query-ppe').click(function(event) {
+            /* Act on the event */
+            event.preventDefault();
+
         });
     });
 
