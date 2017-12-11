@@ -134,21 +134,33 @@ class TransacctionController extends Controller
     public function getStatusThis( Request $request , Transactions $transactions)
     {
         //
-        if( $request->ajax() ) {
 
-           $idtransacction = $request->idTransaction ;
+        $idtransacction = $request->idTransaction ;
 
         $this->getSoapClient();
 
         $result = $this->client->servicio_status_transaction( $idtransacction );
 
-        $tag= $result->transactionState;
+        $this->update( $result );
+
+        $result->autorization = 12;
+
+        if( $result->transactionState == 'NOT_AUTHORIZED' ){
+
+            $result->autorization = 0001;
+        }
+
+        $tag = $result->transactionState;
         
         $message= $result->responseReasonText;
 
 
-            return response()->json([ 'tag' => $tag, 'message' => $message ]);
-        }
+            return response()->json([ 
+                'tag' => $tag, 
+                'message' => $message , 
+                'result' => $result
+             ]);
+        
 
         
     }
@@ -160,9 +172,19 @@ class TransacctionController extends Controller
      * @param  \App\Transactions  $transactions
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Transactions $transactions)
+    public function update( $datos )
     {
         //
+        
+        $instance = Transactions::where( 'transactionID', $datos->transactionID )->get()->first();
+
+        $instance->trazabilityCode = $datos->trazabilityCode;
+        $instance->responseCode = $datos->responseCode;  
+        $instance->responseReasonText = $datos->responseReasonText;
+        
+        $instance->update() ;
+  
+
     }
 
     /**

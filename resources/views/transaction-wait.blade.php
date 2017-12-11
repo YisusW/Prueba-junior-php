@@ -17,7 +17,7 @@
 
                     <form role="form">
 
-                        <center><legend>Esperando Estatus</legend></center>
+                        <center><legend>Debug</legend></center>
                             
 
                         <div id="message-fresh" 
@@ -27,7 +27,7 @@
 
                     @if(isset($results->returnCode))
 
-                    <div id="message" class="alert alert-success" role="alert">
+                    <div id="message" class="alert alert-warning" role="alert">
                         <strong>Estatus : Pendiente!</strong>
                         <br>
                          {{ $results->responseReasonText }}
@@ -37,24 +37,79 @@
                                                         
 
                             @if(isset($results->bankURL))
-                            <input id="transactionid" type="hidden" name="transactionid" value="{{$results->transactionID  }}" >
+                            <div class="form-group">
+                                <label for="">Transacción Id</label>
+                                <input type="numeric" 
+                                name="idtransaction" 
+                                class="form-control" 
+                                value="{{$results->transactionID  }}"
+                                readonly>
+                            </div> 
+
+                            <div class="form-group">
+                                <label for="">trazabilityCode</label>
+                                <input type="numeric" 
+                                id="idtransaction" 
+                                class="form-control" 
+                                value="{{$results->trazabilityCode  }}"
+                                readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="">soliciteDate</label>
+                                <input type="numeric" 
+                                id="soliciteDate" 
+                                class="form-control" 
+                                value=""
+                                readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="">bankProcessDate</label>
+                                <input type="numeric" 
+                                id="bankProcessDate" 
+                                class="form-control" 
+                                value=""
+                                readonly>
+                            </div> 
+
+                            
+                            <div class="form-group">
+                                <label for="">transactionState</label>
+                                <select id="status" class="form-control" >
+                                </select>
+                            </div>                             
+
+                            <div class="form-group">
+                                <label for="">authorizationID</label>
+                                
+                                <input type="numeric" 
+                                id="authorizationID" 
+                                class="form-control" 
+                                value=""\>
+                            </div> 
+
+                            
+
+                            <input id="transactionid" type="hidden" name="transactionid" value="{{$results->transactionID  }}"  >
                             
                             @endif
 
                             <button id="query-manual" 
                             class="btn btn-primary"
-                            type="reset">
-                            consultar estatus</button>
+                            type="reset">Call</button>
 
                         </form>
 
                     @if(isset($results->bankURL))
 
-                    <label for="">para proseguir con la transaccion  debes dar click aqui</label><br>
-                    
-                    <a href="{{ $results->bankURL }}" role="button" class="btn btn-default" target="_blank">
+                    <label for="">para proseguir con la transaccion  debes dar click en el boton ir</label><br>
+
+                    <a id="url" href="{{ $results->bankURL }}" role="button" class="btn btn-success" target="_blank">
                         ir
                     </a>
+
+                    <a id="newurl" href="" role="button" class="btn btn-success" style="display:none"></a>
                      
                     @endif
 
@@ -67,8 +122,7 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-
-        alert()    
+   
         setInterval(hacer_verificacion_status, 300000); //300000 MS == 5 minutes
     
         $("#query-manual").click(function(event) {
@@ -97,8 +151,26 @@
                 $("#message-fresh").html('<strong>Estatus : '+response.tag+'!</strong>'+
                         '<br>'+response.message);
 
+                if(response.result.transactionState=='OK'){
+
+                    $('#url').remove();
+                    $("#query-manual").remove();
+                }
+
+                if( response.result.bankProcessDate ){
+
+                    $('#soliciteDate').val(response.result.bankProcessDate);
+                    $('#bankProcessDate').val(response.result.bankProcessDate);
+                    
+                    
+                    $('#status').html('<option>'+response.result.transactionState+'</option>');
+                    
+                    $('#authorizationID').val(response.result.autorization);
+
+                }
                 $("#message-fresh").fadeIn('slow');
             }
+
         })
         .fail(function() {
             console.log("error");
