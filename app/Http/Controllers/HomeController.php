@@ -24,7 +24,7 @@ class HomeController extends Controller
 
     private function getTransaction(){
 
-       return new TransactionController();
+       return new TransacctionController();
     }
 
     /**
@@ -51,6 +51,13 @@ class HomeController extends Controller
         }
         
     } 
+
+    private function getpersonId( $persondocument ){
+
+        return Person::where('document' , $persondocument )
+        ->get(['id'])->first();
+
+    }
 
     public function getthisperson( $document ){
 
@@ -110,9 +117,26 @@ class HomeController extends Controller
 
         $transaction = $this->getTransaction();
 
-        $transaction->store( $results );
+        $idPerson = $this->getpersonId( $request->persona_identidad );
 
-        return view('test-home')->name('booth');
+        $res =  $transaction->store( $results , $idPerson->id );
 
+        if($res && $results->returnCode == 'SUCCESS'){
+            
+            return view('transaction-wait')->with(compact('results'));
+
+        }else{
+
+            $message = $results->responseReasonCode;
+
+            return view('transaction-fail')->with('message');
+
+        }
+
+    }
+
+    function showfail(){
+
+        return view('transaction-fail');
     }
 }

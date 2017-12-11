@@ -135,13 +135,34 @@ class SoapController extends Controller
     
       $datos = (array) $result;
             
-            foreach ($datos as $key => $value) {
-                 # code...
-                $datos = (object) $value;
-             }             
+        foreach ($datos as $key => $value) {
+             # code...
+            $datos = (object) $value;
+         }             
 
       return $datos ;
   }
 
+    /*-----------------------------------------------------------------------
+    !
+    !   - FUNCION PARA CONSUMIR SERVICIOS DE getTransactionInformation
+    !
+    ------------------------------------------------------------------------*/
+
+    function servicio_status_transaction ( $transaction_id )
+    {
+
+
+    $client = $this->getService();
+
+    //$result = $client->getBankList( $this->getAuth() );
+    $Authentication = $this->getAuth() ;
+    
+    $result = $client->getTransactionInformation( array( 'auth' => $Authentication , 'transactionID' => $transaction_id ) );//llamamos al métdo que nos interesa con los parámetros 
+
+    $result = $this->procesar_peticion($result);
+    
+    return $result;
+  }
 
 }
