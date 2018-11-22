@@ -12,6 +12,26 @@ Installation
 
 ## Laravel
 
+####Installation for Laravel 5.2 and above:
+
+Run `composer require artisaninweb/laravel-soap`
+
+Add the service provider in `app/config/app.php`.
+
+```php
+Artisaninweb\SoapWrapper\ServiceProvider::class, 
+```
+
+To use the alias, add this to the aliases in `app/config/app.php`.
+
+```php
+'SoapWrapper' => Artisaninweb\SoapWrapper\Facade\SoapWrapper::class,  
+```
+
+
+####Installation for Laravel 5.1 and below :
+
+
 Add `artisaninweb/laravel-soap` as requirement to composer.json
 
 ```javascript
@@ -21,6 +41,8 @@ Add `artisaninweb/laravel-soap` as requirement to composer.json
     }
 }
 ```
+
+> If you're using Laravel 5.5 or higher you can skip the two config setups below.
 
 Add the service provider in `app/config/app.php`.
 
